@@ -89,7 +89,7 @@ const createQueries = {
 
     CONSTRAINT project_pkey PRIMARY KEY (id),
     CONSTRAINT fk_organization_id FOREIGN KEY (org_id)
-        REFERENCES public.o${[indexToTable[3]]} (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[3]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
@@ -109,7 +109,7 @@ const createQueries = {
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT group_role_role_id_fkey FOREIGN KEY (role_id)
-        REFERENCES public.${[indexToTable[1]]}e (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[1]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
