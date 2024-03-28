@@ -1,6 +1,8 @@
+const { indexToTable, tableToIndex } = require("./TableNames");
+
 const createQueries = {
-  groups: `
-  CREATE TABLE IF NOT EXISTS public.groups
+  [indexToTable[0]]: `
+  CREATE TABLE IF NOT EXISTS public.${[indexToTable[0]]}
 (
     id uuid NOT NULL,
     name character varying(200) COLLATE pg_catalog."default" NOT NULL,
@@ -12,8 +14,8 @@ const createQueries = {
     CONSTRAINT group_pkey PRIMARY KEY (id)
 )
   `,
-  role: `
-  CREATE TABLE IF NOT EXISTS public.role
+  [indexToTable[1]]: `
+  CREATE TABLE IF NOT EXISTS public.${[indexToTable[1]]}
 (
     id uuid NOT NULL,
     name character varying(200) COLLATE pg_catalog."default" NOT NULL,
@@ -25,8 +27,8 @@ const createQueries = {
     CONSTRAINT role_pkey PRIMARY KEY (id)
 )
   `,
-  permission: `
-  CREATE TABLE IF NOT EXISTS public.permission
+  [indexToTable[2]]: `
+  CREATE TABLE IF NOT EXISTS public.${[indexToTable[2]]}
 (
     id uuid NOT NULL,
     name character varying COLLATE pg_catalog."default" NOT NULL,
@@ -34,8 +36,8 @@ const createQueries = {
     CONSTRAINT permission_pkey PRIMARY KEY (id)
 )
   `,
-  organization: `
-  CREATE TABLE IF NOT EXISTS public.organization
+  [indexToTable[3]]: `
+  CREATE TABLE IF NOT EXISTS public.${[indexToTable[3]]}
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     name character varying COLLATE pg_catalog."default" NOT NULL,
@@ -48,8 +50,8 @@ const createQueries = {
     CONSTRAINT organization_pkey PRIMARY KEY (id)
 )
   `,
-  status: `
-  CREATE TABLE IF NOT EXISTS public.status
+  [indexToTable[4]]: `
+  CREATE TABLE IF NOT EXISTS public.${[indexToTable[4]]}
 (
     id uuid NOT NULL,
     name character varying COLLATE pg_catalog."default" NOT NULL,
@@ -57,8 +59,8 @@ const createQueries = {
     CONSTRAINT status_pkey PRIMARY KEY (id)
 )
   `,
-  users: `
-  CREATE TABLE IF NOT EXISTS public.users
+  [indexToTable[5]]: `
+  CREATE TABLE IF NOT EXISTS public.${[indexToTable[5]]}
 (
     id uuid NOT NULL,
     email character varying(100) COLLATE pg_catalog."default" NOT NULL,
@@ -68,8 +70,8 @@ const createQueries = {
     CONSTRAINT users_pkey PRIMARY KEY (id)  
 )
   `,
-  project: `
-    CREATE TABLE IF NOT EXISTS public.project
+  [indexToTable[6]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[6]]}
 (
     id uuid NOT NULL,
     name character varying(200) COLLATE pg_catalog."default" NOT NULL,
@@ -87,13 +89,13 @@ const createQueries = {
 
     CONSTRAINT project_pkey PRIMARY KEY (id),
     CONSTRAINT fk_organization_id FOREIGN KEY (org_id)
-        REFERENCES public.organization (id) MATCH SIMPLE
+        REFERENCES public.o${[indexToTable[3]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  group_role: `
-    CREATE TABLE IF NOT EXISTS public.group_role
+  [indexToTable[7]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[7]]}
 (
     id uuid NOT NULL,
     created_on date,
@@ -103,17 +105,17 @@ const createQueries = {
     role_id uuid,
     CONSTRAINT group_role_pkey PRIMARY KEY (id),
     CONSTRAINT group_role_group_id_fkey FOREIGN KEY (group_id)
-        REFERENCES public.groups (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[0]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT group_role_role_id_fkey FOREIGN KEY (role_id)
-        REFERENCES public.role (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[1]]}e (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  milestone: `
-    CREATE TABLE IF NOT EXISTS public.milestone
+  [indexToTable[8]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[8]]}
 (
     id uuid NOT NULL DEFAULT uuid_generate_v4(),
     name character varying COLLATE pg_catalog."default" NOT NULL,
@@ -127,13 +129,13 @@ const createQueries = {
     ends_on timestamp without time zone,
     CONSTRAINT milestone_pkey PRIMARY KEY (id),
     CONSTRAINT project_id FOREIGN KEY (project_id)
-        REFERENCES public.project (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[6]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  role_permission: `
-    CREATE TABLE IF NOT EXISTS public.role_permission
+  [indexToTable[9]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[9]]}
 (
     id uuid NOT NULL,
     created_on timestamp without time zone,
@@ -145,25 +147,25 @@ const createQueries = {
     permission_id uuid,
     CONSTRAINT role_permission_pkey PRIMARY KEY (id),
     CONSTRAINT role_permission_organization_id_fkey FOREIGN KEY (org_id)
-        REFERENCES public.organization (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[3]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT role_permission_permission_id_fkey FOREIGN KEY (permission_id)
-        REFERENCES public.permission (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[2]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT role_permission_project_id_fkey FOREIGN KEY (project_id)
-        REFERENCES public.project (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[6]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT role_permission_role_id_fkey FOREIGN KEY (role_id)
-        REFERENCES public.role (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[1]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  epic_status: `
-    CREATE TABLE IF NOT EXISTS public.epic_status
+  [indexToTable[10]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[10]]}
 (
     id uuid NOT NULL,
     epic_id uuid,
@@ -172,13 +174,13 @@ const createQueries = {
     status_update_date timestamp without time zone,
     CONSTRAINT epic_status_pkey PRIMARY KEY (id),
     CONSTRAINT epic_status_status_id_fkey FOREIGN KEY (status_id)
-        REFERENCES public.status (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[4]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  sprint: `
-    CREATE TABLE IF NOT EXISTS public.sprint
+  [indexToTable[11]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[11]]}
 (
     id uuid NOT NULL,
     created_on date,
@@ -192,13 +194,13 @@ const createQueries = {
     project_id uuid NOT NULL,
     CONSTRAINT sprint_pkey PRIMARY KEY (id),
     CONSTRAINT sprint_project_id_fkey FOREIGN KEY (project_id)
-        REFERENCES public.project (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[6]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  epic: `
-    CREATE TABLE IF NOT EXISTS public.epic
+  [indexToTable[12]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[12]]}
 (
     id uuid NOT NULL,
     created_on date,
@@ -210,13 +212,13 @@ const createQueries = {
     project_id uuid NOT NULL,
     CONSTRAINT epic_pkey PRIMARY KEY (id),
     CONSTRAINT epic_project_id_fkey FOREIGN KEY (project_id)
-        REFERENCES public.project (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[6]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  group_user: `
-    CREATE TABLE IF NOT EXISTS public.group_user
+  [indexToTable[13]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[13]]}
 (
     id uuid NOT NULL,
     created_on timestamp without time zone,
@@ -226,17 +228,17 @@ const createQueries = {
     user_id uuid,
     CONSTRAINT group_user_pkey PRIMARY KEY (id),
     CONSTRAINT group_user_group_id_fkey FOREIGN KEY (group_id)
-        REFERENCES public.role (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[1]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT group_user_user_id_fkey FOREIGN KEY (user_id)
-        REFERENCES public.users (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[5]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  user_role: `
-    CREATE TABLE IF NOT EXISTS public.user_role
+  [indexToTable[14]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[14]]}
 (
     id uuid NOT NULL,
     created_on date,
@@ -246,17 +248,17 @@ const createQueries = {
     user_id uuid,
     CONSTRAINT user_role_pkey PRIMARY KEY (id),
     CONSTRAINT user_role_role_id_fkey FOREIGN KEY (role_id)
-        REFERENCES public.role (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[1]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT user_role_user_id_fkey FOREIGN KEY (user_id)
-        REFERENCES public.users (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[5]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  story: `
-    CREATE TABLE IF NOT EXISTS public.story
+  [indexToTable[15]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[15]]}
 (
     id uuid NOT NULL,
     created_on date,
@@ -268,13 +270,13 @@ const createQueries = {
     epic_id uuid NOT NULL,
     CONSTRAINT story_pkey PRIMARY KEY (id),
     CONSTRAINT story_epic_id_fkey FOREIGN KEY (epic_id)
-        REFERENCES public.epic (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[12]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  story_status: `
-    CREATE TABLE IF NOT EXISTS public.story_status
+  [indexToTable[16]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[16]]}
 (
     id uuid NOT NULL,
     org_id uuid NOT NULL,
@@ -283,21 +285,21 @@ const createQueries = {
     status_update_date timestamp without time zone,
     CONSTRAINT story_status_pkey PRIMARY KEY (id),
     CONSTRAINT story_status_organization_id_fkey FOREIGN KEY (org_id)
-        REFERENCES public.organization (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[3]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT story_status_status_id_fkey FOREIGN KEY (status_id)
-        REFERENCES public.status (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[4]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT story_status_story_id_fkey FOREIGN KEY (story_id)
-        REFERENCES public.story (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[15]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  task: `
-    CREATE TABLE IF NOT EXISTS public.task
+  [indexToTable[17]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[17]]}
 (
     id uuid NOT NULL,
     created_on date,
@@ -309,13 +311,13 @@ const createQueries = {
     story_id uuid NOT NULL,
     CONSTRAINT task_pkey PRIMARY KEY (id),
     CONSTRAINT task_story_id_fkey FOREIGN KEY (story_id)
-        REFERENCES public.story (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[15]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  task_status: `
-    CREATE TABLE IF NOT EXISTS public.task_status
+  [indexToTable[18]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[18]]}
 (
     id uuid NOT NULL,
     org_id uuid NOT NULL,
@@ -325,21 +327,21 @@ const createQueries = {
     _date timestamp without time zone,
     CONSTRAINT task_status_pkey PRIMARY KEY (id),
     CONSTRAINT task_status_organization_id_fkey FOREIGN KEY (org_id)
-        REFERENCES public.organization (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[3]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT task_status_status_id_fkey FOREIGN KEY (status_id)
-        REFERENCES public.status (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[4]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION,
     CONSTRAINT task_status_task_id_fkey FOREIGN KEY (task_id)
-        REFERENCES public.task (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[17]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
   `,
-  project_status: `
-    CREATE TABLE IF NOT EXISTS public.project_status
+  [indexToTable[19]]: `
+    CREATE TABLE IF NOT EXISTS public.${[indexToTable[19]]}
 (
     id uuid NOT NULL,
     project_id uuid NOT NULL,
@@ -348,7 +350,7 @@ const createQueries = {
     status_update_date timestamp without time zone,
     CONSTRAINT project_status_pkey PRIMARY KEY (id),
     CONSTRAINT project_status_status_id_fkey FOREIGN KEY (status_id)
-        REFERENCES public.status (id) MATCH SIMPLE
+        REFERENCES public.${[indexToTable[4]]} (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
