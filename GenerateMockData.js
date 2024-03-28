@@ -1,31 +1,34 @@
 const { v4: uuidv4 } = require("uuid");
+const { indexToTable, tableToIndex } = require("./TableNames");
 
 let mockData = {
-  groups: [],
-  role: [],
-  permission: [],
-  organization: [],
-  status: [],
-  users: [],
-  project: [],
-  group_role: [],
-  milestone: [],
-  role_permission: [],
-  epic_status: [],
-  sprint: [],
-  epic: [],
-  group_user: [],
-  user_role: [],
-  story: [],
-  story_status: [],
-  task: [],
-  task_status: [],
-  project_status: [],
+  [indexToTable[0]]: [],
+  [indexToTable[1]]: [],
+  [indexToTable[2]]: [],
+  [indexToTable[3]]: [],
+  [indexToTable[4]]: [],
+  [indexToTable[5]]: [],
+  [indexToTable[6]]: [],
+  [indexToTable[7]]: [],
+  [indexToTable[8]]: [],
+  [indexToTable[9]]: [],
+  [indexToTable[10]]: [],
+  [indexToTable[11]]: [],
+  [indexToTable[12]]: [],
+  [indexToTable[13]]: [],
+  [indexToTable[14]]: [],
+  [indexToTable[15]]: [],
+  [indexToTable[16]]: [],
+  [indexToTable[17]]: [],
+  [indexToTable[18]]: [],
+  [indexToTable[19]]: [],
   // Add more tables here if needed
 };
 
 function generateMockDataForTable(tableName, i) {
   let currentDate; // Declare currentDate variable outside the switch statement
+
+  // Foreign keys
 
   // organization id foreign key
   let organizationIds = mockData["organization"].map(
@@ -80,6 +83,8 @@ function generateMockDataForTable(tableName, i) {
   let taskIds = mockData["task"].map((item) => item.id);
   let taskId = taskIds[Math.floor(Math.random() * taskIds.length)];
   // task id foriegn key
+
+  // Foreign keys
 
   switch (tableName) {
     case "groups":
